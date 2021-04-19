@@ -1,0 +1,20 @@
+{
+  "frames": [
+    {
+      "name": "water-splash0.png",
+      "position": { "x": 0, "y": 0, "w": 2000, "h": 2000 }
+    },
+    {
+      "name": "water-splash1.png",
+      "position": { "x": 2000, "y": 0, "w": 2000, "h": 2000 }
+    },
+    {
+      "name": "water-splash2.png",
+      "position": { "x": 0, "y": 2000, "w": 2000, "h": 2000 }
+    },
+    {
+      "name": "water-splash3.png",
+      "position": { "x": 2000, "y": 2000, "w": 2000, "h": 2000 }
+    }
+  ]
+}
