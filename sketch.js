@@ -23,13 +23,14 @@ var waterSplashAnimation = [];
 var waterSplashSpritedata, waterSplashSpritesheet;
 
 var isGameOver = false;
+var isLaughing = false;
 
 function preload() {
   backgroundImg = loadImage("./assets/background.gif");
-  backgroundMusic = loadSound("./assets/background_music.wav");
-  waterSound = loadSound("./assets/cannon_water.wav");
-  pirateLaughSound = loadSound("./assets/pirate_laugh.wav");
-  cannonExplosion = loadSound("./assets/cannon_explosion.wav");
+  backgroundMusic = loadSound("./assets/background_music.mp3");
+  waterSound = loadSound("./assets/cannon_water.mp3");
+  pirateLaughSound = loadSound("./assets/pirate_laugh.mp3");
+  cannonExplosion = loadSound("./assets/cannon_explosion.mp3");
   towerImage = loadImage("./assets/tower.png");
   boatSpritedata = loadJSON("assets/boat/boat.json");
   boatSpritesheet = loadImage("assets/boat/boat.png");
@@ -40,13 +41,13 @@ function preload() {
 }
 
 function setup() {
-  canvas = createCanvas(windowWidth - 200, windowHeight - 150);
+  canvas = createCanvas(1200,600);
   engine = Engine.create();
   world = engine.world;
   angle = -PI / 4;
   ground = new Ground(0, height - 1, width * 2, 1);
-  tower = new Tower(width / 2 - 650, height - 290, 250, 580);
-  cannon = new Cannon(width / 2 - 600, height / 2 - 220, 120, 40, angle);
+  tower = new Tower(150, 350, 160, 310);
+  cannon = new Cannon(180, 110, 130, 100, angle);
 
   var boatFrames = boatSpritedata.frames;
   for (var i = 0; i < boatFrames.length; i++) {
@@ -139,17 +140,16 @@ function showBoats() {
       boats.length < 4 &&
       boats[boats.length - 1].body.position.x < width - 300
     ) {
-      var positions = [-130, -100, -120, -80];
+      var positions = [-40, -60, -70, -20];
       var position = random(positions);
       var boat = new Boat(
         width,
         height - 100,
-        200,
-        200,
+        170,
+        170,
         position,
         boatAnimation
       );
-
       boats.push(boat);
     }
 
@@ -163,13 +163,17 @@ function showBoats() {
       boats[i].animate();
       var collision = Matter.SAT.collides(tower.body, boats[i].body);
       if (collision.collided && !boats[i].isBroken) {
-        pirateLaughSound.play();
+         //Added isLaughing flag and setting isLaughing to true
+         if(!isLaughing && !pirateLaughSound.isPlaying()){
+          pirateLaughSound.play();
+          isLaughing = true
+        }
         isGameOver = true;
         gameOver();
       }
     }
   } else {
-    var boat = new Boat(width, height - 100, 200, 200, -100, boatAnimation);
+    var boat = new Boat(width, height - 60, 170, 170, -60, boatAnimation);
     boats.push(boat);
   }
 }

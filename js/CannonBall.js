@@ -6,7 +6,7 @@ class CannonBall {
       density: 1.0,
       isStatic: true
     };
-    this.r = 40;
+    this.r = 30;
     this.speed = 0.05;
     this.body = Bodies.circle(x, y, this.r, options);
     this.image = loadImage("./assets/cannonball.png");
@@ -35,7 +35,8 @@ class CannonBall {
   }
 
   shoot() {
-    var velocity = p5.Vector.fromAngle(cannon.angle);
+    var newAngle = cannon.angle - 0.5
+    var velocity = p5.Vector.fromAngle(newAngle);
     velocity.mult(20);
     Matter.Body.setStatic(this.body, false);
     Matter.Body.setVelocity(this.body, { x: velocity.x, y: velocity.y });
