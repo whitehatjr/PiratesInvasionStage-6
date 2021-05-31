@@ -13,7 +13,7 @@ class CannonBall {
     this.animation = [this.image];
     this.tower = loadImage("./assets/gray.jpg");
     this.trajectory = [];
-    this.isSink = false;
+
     World.add(world, this.body);
   }
 
@@ -35,6 +35,7 @@ class CannonBall {
   }
 
   shoot() {
+    //adding new angle 
     var newAngle = cannon.angle - 0.5
     var velocity = p5.Vector.fromAngle(newAngle);
     velocity.mult(20);
