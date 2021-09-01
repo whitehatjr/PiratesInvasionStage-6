@@ -1,14 +1,9 @@
 class Boat {
   constructor(x, y, width, height, boatPos, boatAnimation) {
-    var options = {
-      restitution: 0.8,
-      friction: 1.0,
-      density: 1.0,
-      label: "boat"
-    };
+   
     this.animation = boatAnimation;
     this.speed = 0.05;
-    this.body = Bodies.rectangle(x, y, width, height, options);
+    this.body = Bodies.rectangle(x, y, width, height);
     this.width = width;
     this.height = height;
 
@@ -18,7 +13,7 @@ class Boat {
     World.add(world, this.body);
   }
   animate() {
-    this.speed += 0.05 % 1.1;
+    this.speed += 0.05;
   }
 
   remove(index) {
@@ -47,3 +42,4 @@ class Boat {
     pop();
   }
 }
+
