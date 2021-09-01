@@ -1,3 +1,3 @@
 # PiratesInvasionStage-6
 
-adding animations
+adding sounds and score
