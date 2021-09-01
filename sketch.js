@@ -2,13 +2,11 @@ const Engine = Matter.Engine;
 const World = Matter.World;
 const Bodies = Matter.Bodies;
 const Constraint = Matter.Constraint;
-var engine,
-  world,
-  backgroundImg,
-  waterSound,
-  pirateLaughSound,
-  backgroundMusic,
-  cannonExplosion;
+var engine, world, backgroundImg,
+waterSound,
+pirateLaughSound,
+backgroundMusic,
+cannonExplosion;
 var canvas, angle, tower, ground, cannon, boat;
 var balls = [];
 var boats = [];
@@ -23,7 +21,7 @@ var waterSplashAnimation = [];
 var waterSplashSpritedata, waterSplashSpritesheet;
 
 var isGameOver = false;
-var isLaughing = false;
+var isLaughing= false;
 
 function preload() {
   backgroundImg = loadImage("./assets/background.gif");
@@ -44,10 +42,17 @@ function setup() {
   canvas = createCanvas(1200,600);
   engine = Engine.create();
   world = engine.world;
-  angle = -PI / 4;
-  ground = new Ground(0, height - 1, width * 2, 1);
-  tower = new Tower(150, 350, 160, 310);
-  cannon = new Cannon(180, 110, 130, 100, angle);
+  angleMode(DEGREES)
+  angle = 15
+
+
+  ground = Bodies.rectangle(0, height - 1, width * 2, 1, { isStatic: true });
+  World.add(world, ground);
+
+  tower = Bodies.rectangle(160, 350, 160, 310, { isStatic: true });
+  World.add(world, tower);
+
+  cannon = new Cannon(180, 110, 100, 50, angle);
 
   var boatFrames = boatSpritedata.frames;
   for (var i = 0; i < boatFrames.length; i++) {
@@ -81,37 +86,52 @@ function draw() {
   }
 
   Engine.update(engine);
-  ground.display();
+ 
+  push();
+  translate(ground.position.x, ground.position.y);
+  fill("brown");
+  rectMode(CENTER);
+  rect(0, 0, width * 2, 1);
+  pop();
+
+  push();
+  translate(tower.position.x, tower.position.y);
+  rotate(tower.angle);
+  imageMode(CENTER);
+  image(towerImage, 0, 0, 160, 310);
+  pop();
 
   showBoats();
 
-  for (var i = 0; i < balls.length; i++) {
+   for (var i = 0; i < balls.length; i++) {
     showCannonBalls(balls[i], i);
-    for (var j = 0; j < boats.length; j++) {
-      if (balls[i] !== undefined && boats[j] !== undefined) {
-        var collision = Matter.SAT.collides(balls[i].body, boats[j].body);
-        if (collision.collided) {
-          if (!boats[j].isBroken && !balls[i].isSink) {
-            score += 5;
-            boats[j].remove(j);
-            j--;
-          }
-
-          Matter.World.remove(world, balls[i].body);
-          balls.splice(i, 1);
-          i--;
-        }
-      }
-    }
+    collisionWithBoat(i);
   }
 
   cannon.display();
-  tower.display();
+  
 
   fill("#6d4c41");
   textSize(40);
   text(`Score:${score}`, width - 200, 50);
   textAlign(CENTER, CENTER);
+}
+
+function collisionWithBoat(index) {
+  for (var i = 0; i < boats.length; i++) {
+    if (balls[index] !== undefined && boats[i] !== undefined) {
+      var collision = Matter.SAT.collides(balls[index].body, boats[i].body);
+
+      if (collision.collided) {
+        score+=5
+          boats[i].remove(i);
+        
+
+        Matter.World.remove(world, balls[index].body);
+        delete balls[index];
+      }
+    }
+  }
 }
 
 function keyPressed() {
@@ -124,17 +144,18 @@ function keyPressed() {
 }
 
 function showCannonBalls(ball, index) {
-  ball.display();
-  ball.animate();
-  if (ball.body.position.x >= width || ball.body.position.y >= height - 50) {
-    if (!ball.isSink) {
-      waterSound.play();
+  if (ball) {
+    ball.display();
+    ball.animate();
+    if (ball.body.position.x >= width || ball.body.position.y >= height - 50) {
+      waterSound.play()  
       ball.remove(index);
+      
     }
   }
 }
 
-function showBoats() {  
+function showBoats() {
   if (boats.length > 0) {
     if (
       boats.length < 4 &&
@@ -150,6 +171,7 @@ function showBoats() {
         position,
         boatAnimation
       );
+
       boats.push(boat);
     }
 
@@ -161,13 +183,13 @@ function showBoats() {
 
       boats[i].display();
       boats[i].animate();
-      var collision = Matter.SAT.collides(tower.body, boats[i].body);
+      var collision = Matter.SAT.collides(this.tower, boats[i].body);
       if (collision.collided && !boats[i].isBroken) {
-         //Added isLaughing flag and setting isLaughing to true
-         if(!isLaughing && !pirateLaughSound.isPlaying()){
-          pirateLaughSound.play();
-          isLaughing = true
-        }
+          //Added isLaughing flag and setting isLaughing to true
+          if(!isLaughing && !pirateLaughSound.isPlaying()){
+            pirateLaughSound.play();
+            isLaughing = true
+          }
         isGameOver = true;
         gameOver();
       }
